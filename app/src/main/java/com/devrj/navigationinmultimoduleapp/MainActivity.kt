@@ -1,6 +1,5 @@
 package com.devrj.navigationinmultimoduleapp
 
-import AppRoute
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -14,10 +13,12 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
+import com.devrj.core_navigation.AppNavController
+import com.devrj.core_navigation.AppRoute
 import com.devrj.core_navigation.NavigationEvent
-import com.devrj.core_navigation.NavigationManager
 import com.devrj.design_system.theme.NavigationInMultiModuleAppTheme
 import com.devrj.feature_auth.navgraph.authGraph
+import com.devrj.feature_home.homeGraph
 import com.devrj.feature_on_boarding.navgraph.onBoardingGraph
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -26,19 +27,17 @@ import javax.inject.Inject
 class MainActivity : ComponentActivity() {
 
     @Inject
-    lateinit var navigationManager: NavigationManager
+    lateinit var appNavController: AppNavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            val navController = rememberNavController()
             NavigationInMultiModuleAppTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     MainApp(
                         modifier = Modifier.padding(innerPadding),
-                        navController = navController,
-                        navigationManager = navigationManager
+                        appNavController = appNavController
                     )
                 }
             }
@@ -47,32 +46,43 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun MainApp(modifier: Modifier, navController: NavHostController,navigationManager: NavigationManager) {
+fun MainApp(modifier: Modifier, appNavController: AppNavController) {
     // Observe cross-module navigation events
-    LaunchedEffect(Unit) {
-        navigationManager.events.collect { event ->
-            when (event) {
-                is NavigationEvent.NavigateTo -> {
-                    navController.navigate(event.route)
-                }
-                is NavigationEvent.NavigateAndClear -> {
-                    navController.navigate(event.route) {
-                        popUpTo(0) { inclusive = true }
-                    }
-                }
-                is NavigationEvent.NavigateUp -> {
-                    navController.navigateUp()
-                }
-            }
-        }
-    }
+    val navController = rememberNavController()
+    NavigationObserver(navController = navController, appNavController = appNavController)
 
     NavHost(
         modifier = modifier,
         navController = navController,
-        startDestination = AppRoute.OnBoardingGraph
+        startDestination = AppRoute.OnBoarding.Graph
     ) {
-        onBoardingGraph(navController,navigationManager)
-        authGraph(navController)
+        onBoardingGraph(appNavController)
+        authGraph(appNavController)
+        homeGraph(appNavController)
+    }
+}
+
+@Composable
+fun NavigationObserver(
+    navController: NavHostController,
+    appNavController: AppNavController
+) {
+    // Listens to commands coming from feature modules and executes them on the NavController
+    LaunchedEffect(Unit) {
+        appNavController.navigationCommands.collect { command ->
+            when (command) {
+                is NavigationEvent.Back -> navController.popBackStack()
+                is NavigationEvent.To -> {
+                    navController.navigate(command.route) {
+                        command.options?.let { options ->
+                            launchSingleTop = options.launchSingleTop
+                            options.popUpToRoute?.let { popRoute ->
+                                popUpTo(popRoute) { inclusive = options.inclusive }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }

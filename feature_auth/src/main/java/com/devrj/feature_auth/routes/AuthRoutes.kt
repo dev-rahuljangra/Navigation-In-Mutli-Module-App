@@ -1,8 +1,10 @@
 package com.devrj.feature_auth.routes
 
+
+import com.devrj.core_navigation.AppRoute
 import kotlinx.serialization.Serializable
 
-internal sealed interface AuthRoutes {
+sealed interface AuthRoutes: AppRoute {
     @Serializable
     data object ScreenA : AuthRoutes
 

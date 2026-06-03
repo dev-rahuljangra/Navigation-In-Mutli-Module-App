@@ -1,20 +1,18 @@
 package com.devrj.feature_on_boarding.navgraph
 
-import AppRoute
-import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.devrj.core_navigation.NavigationManager
+import com.devrj.core_navigation.AppNavController
+import com.devrj.core_navigation.AppRoute
 import com.devrj.feature_on_boarding.routes.OnBoardingRoutes
 import com.devrj.feature_on_boarding.ui.OnBoardingScreenA
 import com.devrj.feature_on_boarding.ui.OnBoardingScreenB
 
 fun NavGraphBuilder.onBoardingGraph(
-    navController: NavController,
-    navigationManager: NavigationManager
+    navController: AppNavController
 ){
-    navigation<AppRoute.OnBoardingGraph>(
+    navigation<AppRoute.OnBoarding.Graph>(
         startDestination = OnBoardingRoutes.ScreenA
     ){
         composable<OnBoardingRoutes.ScreenA>{
@@ -22,7 +20,7 @@ fun NavGraphBuilder.onBoardingGraph(
         }
 
         composable<OnBoardingRoutes.ScreenB>{
-            OnBoardingScreenB(navController,navigationManager)
+            OnBoardingScreenB(navController)
         }
     }
 }

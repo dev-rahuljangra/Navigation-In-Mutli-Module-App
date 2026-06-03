@@ -1,8 +1,9 @@
 package com.devrj.feature_on_boarding.routes
 
+import com.devrj.core_navigation.AppRoute
 import kotlinx.serialization.Serializable
 
-internal sealed interface OnBoardingRoutes {
+sealed interface OnBoardingRoutes : AppRoute{
     @Serializable
     data object ScreenA : OnBoardingRoutes
 

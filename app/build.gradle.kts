@@ -46,6 +46,7 @@ dependencies {
     implementation(project(":core_navigation"))
     implementation(project(":feature_on_boarding"))
     implementation(project(":feature_auth"))
+    implementation(project(":feature_home"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

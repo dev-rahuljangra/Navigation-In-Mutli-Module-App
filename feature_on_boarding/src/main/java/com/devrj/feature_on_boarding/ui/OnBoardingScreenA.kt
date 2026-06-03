@@ -10,11 +10,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
+import com.devrj.core_navigation.AppNavController
 import com.devrj.feature_on_boarding.routes.OnBoardingRoutes
 
 @Composable
-fun OnBoardingScreenA(navController: NavController) {
+fun OnBoardingScreenA(navController: AppNavController) {
     Column(
         modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -25,7 +25,7 @@ fun OnBoardingScreenA(navController: NavController) {
         )
 
         Button(modifier = Modifier.padding(top = 20.dp), onClick = {
-            navController.navigate(OnBoardingRoutes.ScreenB(prevScreen = "Screen A"))
+            navController.navigateTo(OnBoardingRoutes.ScreenB(prevScreen = "Screen A"))
         }) {
             Text(
                 text = "Navigate to Screen B",

@@ -11,10 +11,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.devrj.core_navigation.AppNavController
 import com.devrj.feature_auth.routes.AuthRoutes
 
 @Composable
-fun LoginScreen(navController: NavController) {
+fun LoginScreen(navController: AppNavController) {
     Column(
         modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -25,7 +26,7 @@ fun LoginScreen(navController: NavController) {
         )
 
         Button(modifier = Modifier.padding(top = 20.dp), onClick = {
-            navController.navigate(AuthRoutes.ScreenB(prevScreen = "Screen A"))
+            navController.navigateTo(AuthRoutes.ScreenB(prevScreen = "Screen A"))
         }) {
             Text(
                 text = "Navigate to SignUp Screen",
